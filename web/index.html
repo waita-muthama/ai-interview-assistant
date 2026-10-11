@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A consent-first AI interview preparation assistant with live question transcription and tailored answer suggestions.">
+  <title>Interview Assist — Your AI interview copilot</title>
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a href="/" class="brand" aria-label="Interview Assist home">
+        <span class="brand-logo"><svg viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 15a9 9 0 0 1 18 0c0 5-4 9-9 9h-5l-4 4v-9a9 9 0 0 1 0-4Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M12 16h8" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></span>
+        <span class="brand-type">INTERVIEW<span>ASSIST</span><small>AI interview copilot</small></span>
+      </a>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="sidebar-nav" aria-label="Primary navigation">
+        <button class="nav-link is-active" data-page="live" type="button"><span class="nav-icon">◉</span> Live assistant</button>
+        <button class="nav-link" data-page="profile" type="button"><span class="nav-icon">▤</span> Candidate profile</button>
+        <button class="nav-link" data-page="history" type="button"><span class="nav-icon">◷</span> Interview history <span class="nav-count" id="navHistoryCount">0</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="privacy-box"><span class="privacy-icon">♢</span><strong>Local-first workspace</strong><p>Your profile and history stay in the local database. Audio and prompts are sent to OpenAI when you use AI features.</p></div>
+        <div class="version">INTERVIEW ASSIST <span>v1.0</span></div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="topbar">
+        <div class="breadcrumbs">Workspace <span>/</span> <strong id="crumb">Live assistant</strong></div>
+        <div class="top-actions"><span class="api-status" id="apiStatus"><span class="status-dot"></span>Checking API</span><span class="top-separator"></span><span class="avatar">IA</span></div>
+      </header>
+      <main id="content" class="main-inner">
+        <section id="page-live" class="page" aria-labelledby="liveTitle">
+          <div class="page-heading"><div><div class="eyebrow">YOUR LIVE WORKSPACE <span class="eyebrow-line"></span></div><h1 id="liveTitle">Your interview, <span>better prepared.</span></h1><p>Capture a question, review an AI-drafted response, and answer confidently in your own words.</p></div><div class="heading-pill"><span class="live-circle"></span> Assistant mode</div></div>
+          <div class="consent-notice"><span class="notice-icon">ⓘ</span><span><strong>Permission matters.</strong> Use live assistance only when your interview rules allow it. Tell all relevant participants before recording their voices.</span></div>
+          <div class="live-grid">
+            <section class="panel capture-panel" aria-labelledby="captureHeading">
+              <div class="panel-header"><div><div class="panel-overline">STEP 01</div><h2 id="captureHeading">Capture a question</h2></div><span class="pill pill-muted" id="captureBadge">Ready</span></div>
+              <div class="recorder-stage" id="recorderStage">
+                <div class="mic-glow"><div class="mic-core"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v2a7 7 0 0 0 14 0v-2M12 19v3M8 22h8"/></svg></div></div>
+                <div class="wave" id="wave" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+                <strong id="recorderTitle">Microphone is ready</strong><p id="recorderSubtitle">Select an input and start listening to the next question.</p>
+                <div class="record-timer" id="recordTimer" aria-live="off">00:00</div>
+              </div>
+              <div class="mic-options"><label for="micSelect">Microphone input</label><select id="micSelect" aria-label="Microphone input"><option value="">Default microphone</option></select><label class="check-row"><input id="autoStop" type="checkbox" checked> <span>Automatically stop after a pause</span></label></div>
+              <div class="record-actions"><button type="button" class="btn btn-primary" id="listenBtn"><span>●</span> Start listening</button><button type="button" class="btn btn-outline" id="stopBtn" disabled>■ Stop &amp; process</button></div>
+              <div class="divider-with-label"><span>OR ENTER A QUESTION</span></div>
+              <label class="field-label" for="questionInput">Interview question</label><textarea id="questionInput" rows="4" maxlength="3500" placeholder="e.g. Tell me about a time you solved a difficult technical problem."></textarea>
+              <div class="question-footer"><span id="questionCount">0 / 3500</span><span>Ctrl + Enter to generate</span></div>
+              <div class="form-grid"><div class="input-group"><label for="answerStyle">Answer length</label><select id="answerStyle"><option value="brief">Brief · 30–45 sec</option><option value="balanced" selected>Balanced · 60–90 sec</option><option value="detailed">Detailed · 2 min</option></select></div><div class="input-group"><label for="answerTone">Response style</label><select id="answerTone"><option value="professional" selected>Professional</option><option value="confident">Confident</option><option value="technical">Technical</option></select></div></div>
+              <button type="button" class="btn btn-secondary btn-full" id="generateBtn"><span>✦</span> Generate suggested answer <span class="arrow">→</span></button>
+            </section>
+            <section class="panel answer-panel" aria-labelledby="answerHeading">
+              <div class="panel-header"><div><div class="panel-overline">STEP 02</div><h2 id="answerHeading">Suggested response</h2></div><span class="pill pill-ai">✦ AI DRAFT</span></div>
+              <div id="emptyAnswer" class="answer-empty"><div class="empty-orbit"><span>✦</span></div><h3>Thoughtful answers, in seconds.</h3><p>Your tailored answer will appear here after you record or enter an interview question.</p><div class="tips"><span>✓ Natural speaking style</span><span>✓ Tailored to your CV</span><span>✓ Context-aware follow-ups</span></div></div>
+              <div id="answerContent" class="answer-content" hidden><div class="answer-question-label">QUESTION</div><p id="answerQuestion" class="answer-question"></p><div class="answer-divider"></div><div class="answer-question-label">YOUR SUGGESTED ANSWER</div><div id="answerText" class="answer-text" aria-live="polite"></div><div class="answer-meta"><span id="answerWords"></span><span id="answerUpdated"></span></div><div class="answer-buttons"><button class="btn btn-primary" type="button" id="copyBtn">⧉ Copy answer</button><button class="btn btn-outline" type="button" id="regenerateBtn">↻ Regenerate</button></div></div>
+              <div class="answer-footer"><span>✧</span> AI suggestions are drafts. Check factual accuracy and express answers in your own words.</div>
+            </section>
+          </div>
+          <div class="bottom-help"><div><strong>Make it personal.</strong> Add your CV, target job and experience so generated answers reflect your real background.</div><button type="button" class="text-link" data-page="profile">Set up profile →</button></div>
+        </section>
+
+        <section id="page-profile" class="page" hidden aria-labelledby="profileTitle"><div class="page-heading"><div><div class="eyebrow">PERSONALIZATION <span class="eyebrow-line"></span></div><h1 id="profileTitle">Candidate <span>profile.</span></h1><p>Give the assistant accurate context. Details entered here remain in your local database.</p></div></div>
+          <div class="profile-layout"><form id="profileForm" class="panel profile-panel"><div class="panel-header"><div><div class="panel-overline">CANDIDATE DETAILS</div><h2>Professional background</h2></div></div><div class="input-group"><label for="profileName">Full name <span class="optional">Optional</span></label><input id="profileName" maxlength="160" placeholder="e.g. Alex Morgan"></div><div class="input-group"><label for="profileRole">Target position</label><input id="profileRole" maxlength="240" placeholder="e.g. Network and Infrastructure Engineer"></div><div class="input-group"><label for="profileExperience">Skills, genuine experience and achievements</label><textarea id="profileExperience" rows="6" maxlength="6000" placeholder="List your strengths, past roles, projects and measurable accomplishments. Only include things you have actually done."></textarea></div><div class="input-group"><label for="profileJob">Job description or interview focus</label><textarea id="profileJob" rows="7" maxlength="14000" placeholder="Paste the advertised position, key responsibilities and requirements..."></textarea></div><button type="submit" class="btn btn-primary">Save profile</button></form>
+            <div><section class="panel profile-panel"><div class="panel-header"><div><div class="panel-overline">DOCUMENTS</div><h2>Resume / CV</h2></div></div><div class="upload-box" id="dropZone"><div class="upload-icon">⇧</div><strong>Upload your current CV</strong><p>Choose a PDF, DOCX, TXT or MD file. Maximum 8 MB.</p><label class="btn btn-outline upload-button" for="resumeFile">Choose document</label><input id="resumeFile" type="file" accept=".pdf,.docx,.txt,.md" hidden></div><div class="resume-details" id="resumeDetails" hidden><strong id="resumeName"></strong><p id="resumeCount"></p><button id="removeResume" class="link-danger" type="button">Remove resume</button></div></section><section class="panel guide-panel"><div class="panel-overline">BETTER RESULTS</div><h2>What makes an answer useful?</h2><p>Specific and truthful context makes suggestions more relevant. Include real accomplishments, technologies you have used and the duties listed in your target job.</p><div class="guide-item">01 <span>State genuine experience and skills.</span></div><div class="guide-item">02 <span>Include the vacancy requirements.</span></div><div class="guide-item">03 <span>Read each AI answer before using it.</span></div></section></div></div>
+        </section>
+
+        <section id="page-history" class="page" hidden aria-labelledby="historyTitle"><div class="page-heading"><div><div class="eyebrow">SESSION ACTIVITY <span class="eyebrow-line"></span></div><h1 id="historyTitle">Interview <span>history.</span></h1><p>Review earlier questions and suggestions saved to this computer.</p></div><div class="history-actions"><button type="button" class="btn btn-outline" id="exportHistory">⇩ Export notes</button><button type="button" class="btn btn-danger" id="clearHistory">Clear history</button></div></div><div class="history-search"><label for="historyFilter">Search your past questions</label><input id="historyFilter" type="search" placeholder="Search questions and suggested answers..."></div><div id="historyList" class="history-list"></div><p id="historyNoMatches" class="no-matches" hidden>No matching questions found. Try another search term.</p><div id="historyEmpty" class="panel history-empty"><div>◷</div><h2>No questions yet</h2><p>Record or type your first interview question to start building your history.</p><button type="button" class="btn btn-primary" data-page="live">Open live assistant</button></div></section>
+      </main>
+      <footer class="footer">INTERVIEW ASSIST <span>•</span> Local desktop experience <span>•</span> Built for responsible, consent-based assistance</footer>
+    </div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>
